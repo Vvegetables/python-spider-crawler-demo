@@ -1,0 +1,8 @@
+#coding=utf-8
+from scrapy import Request
+from scrapy.spider import CrawlSpider, Rule
+from scrapy.linkextractors import LinkExtractor
+from tutorial.items import MzituScrapyItem
+
+class MzituSpider(CrawlSpider):
+    name = 'mzitu'

@@ -1,0 +1,28 @@
+# -*- coding: utf-8 -*-
+
+# Define here the models for your scraped items
+#
+# See documentation in:
+# http://doc.scrapy.org/en/latest/topics/items.html
+
+import scrapy
+
+
+class TutorialItem(scrapy.Item):
+    # define the fields for your item here like:
+    # name = scrapy.Field()
+    pass
+
+class LogoItem(scrapy.Item):
+    date = scrapy.Field() #获得数据的时间点
+    name = scrapy.Field() #数据的名字
+    url = scrapy.Field() #图片的url地址
+    address = scrapy.Field() #网址
+
+class MzituScrapyItem(scrapy.Item):
+    # define the fields for your item here like:
+    # name = scrapy.Field()
+    name = scrapy.Field()
+    image_urls = scrapy.Field()
+    url = scrapy.Field()
+    pass

@@ -1,0 +1,8 @@
+#coding=utf-8
+import urllib2
+
+def download(url,num_reties=2):
+    print 'download:',url
+    
+    try:
+        html = urllib2.urlopen(url).read().encode('utf-8')

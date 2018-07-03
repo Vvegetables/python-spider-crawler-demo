@@ -1,0 +1,9 @@
+#coding=utf-8
+from education_crawler import create_table, EducationNews
+
+
+if __name__ == '__main__':
+    _session = create_table()
+    print 'success'
+    our_user = _session.query(EducationNews).filter_by(title='ed').first()
+    

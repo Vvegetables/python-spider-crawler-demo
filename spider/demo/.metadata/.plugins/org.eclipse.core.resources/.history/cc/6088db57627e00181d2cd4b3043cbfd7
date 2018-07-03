@@ -1,0 +1,5 @@
+#coding=utf-8
+from education_crawler import create_table
+
+if __name__ == '__main__':
+    create_table()

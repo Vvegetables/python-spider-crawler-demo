@@ -1,0 +1,17 @@
+#coding=utf-8
+from scrapy import Request
+from scrapy.spider import CrawlSpider, Rule
+from scrapy.linkextractors import LinkExtractor
+from tutorial.items import MzituScrapyItem
+
+class MzituSpider(CrawlSpider):
+    name = 'mzitu'
+    allowed_domains = ['mzitu.com']
+    start_urls = ['http://www.mzitu.com/']
+    img_urls = []
+    rules = (
+        Rule(LinkExtractor(allow=('http://www.mzitu.com/\d{1,6}',), deny=('http://www.mzitu.com/\d{1,6}/\d{1,6}')), callback='parse_item', follow=True),
+    )
+    
+    def parse_item(self,response):
+        item = MzituScrapyItem()

@@ -1,0 +1,13 @@
+1.创建工程
+	scrapy startproject tutorial
+2.创建项目
+	scrapy genspider spider name mydomain.com
+3.启动爬虫
+	scrapy crawl [spider name]
+
+4.查看可用命令
+	scrapy -h
+
+http://scrapy-chs.readthedocs.io/zh_CN/0.24/topics/commands.html
+
+http://brucedone.com/archives/771

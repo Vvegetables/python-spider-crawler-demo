@@ -1,0 +1,37 @@
+import scrapy
+
+from tutorial.items import LogoItem
+from scrapy.selector import Selector
+import datetime
+class UniLogo(scrapy.Spider):
+	name = 'unilogo'
+	# allowed_domin = []
+	# start_urls = []
+
+# 	def make_requests_from_url(url):
+		# pass
+
+	def start_requests(self):
+		return [scrapy.FormRequest("http://www.tsinghua.edu.cn/publish/thu2018/index.html",
+#                                formdata={'user': 'john', 'pass': 'secret'},
+                               callback=self.self_parse)]
+
+	def self_parse(self,response):
+		item = LogoItem()
+		sel = Selector(response)
+		item['url'] = sel.xpath("//a[@class='logo']/img/@src").extract()[0]
+		item['name'] = sel.xpath("//head/title/text()").extract()[0]
+		item['date'] = datetime.datetime.now().strftime('%Y-%m-%d %H')
+		item['address'] = reponse.url
+		
+		return item
+	def parse(self,response):
+		pass
+
+	# def log(message):
+	# 	pass
+
+	# def closed(reason):
+	# 	pass
+
+	
