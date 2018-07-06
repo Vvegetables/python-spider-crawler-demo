@@ -1,0 +1,51 @@
+#coding=utf-8
+from functools import wraps
+
+import MySQLdb as mysqldb
+
+def check_error(func):
+    @wraps(func)
+    def wrapper(*args,**kwargs):
+        try:
+            func(*args,**kwargs)
+        except:
+            return None
+        return func(*args,**kwargs)
+    return wrapper
+
+class MysqlConnect:
+    
+    def __init__(self,host,username,password,dbname,port=3306):
+        self.db = mysqldb.connect(host+':'+port,username,password,dbname,charset='utf8')
+        self.cursor = self.db.cursor(cursorclass=mysqldb.cursors.DictCursor)
+        self.results = None
+    
+    def query(self,tablename,fields=None,_filter=None,limit=None,order_by=None,distinct=None):
+        if not fields:
+            fields = '*'
+        else:
+            if not isinstance(fields,(list,tuple)):
+                raise Exception('fields 数据类型错误！应该为list或者tuple')
+            else:
+                fields = ','.join(map(lambda x:'`'+x+'`',fields))
+        sql = ' SELECT {} FROM {} '.format(fields,tablename)
+        
+        if _filter:
+            if isinstance(_filter,(str,unicode)):
+                sql += ' WHERE {}'.format(_filter)
+            else:
+                raise Exception('_filter 数据类型错误！应该为str或者unicode')
+        self.cursor.execute(sql)
+        self.results = self.cursor.fetchall()
+    
+    @check_error
+    def fetch_one(self):
+        return self.cursor.fetch_one()
+    
+    @check_error
+    def fetch_more(self,start,end):
+        pass
+    
+    @check_error
+    def fetch_all(self):
+        pass

@@ -1,0 +1,8 @@
+import sys
+
+sys.path
+
+print sys.path
+# from moduletestmain.sub1.ssub1 import ssub1
+# 
+# ssub1()

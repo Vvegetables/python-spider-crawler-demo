@@ -1,6 +1,0 @@
-#coding=utf-8
-from education_crawler.utils.self_excel import excel_read
-class SelfProcess:
-    def __init__(self,_start_url,path):
-        url = ((u for u in excel_read(path)) if path else None) or _start_url
-        
