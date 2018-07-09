@@ -13,7 +13,6 @@ encoding//education_crawler/utils/self_excel.py=utf-8
 encoding//education_crawler/utils/url_redis.py=utf-8
 encoding//moduletestmain/__init__.py=utf-8
 encoding//moduletestmain/sub1/sub1.py=utf-8
-encoding//self_mysql/mongo_test.py=utf-8
 encoding//self_mysql/mysql_connect.py=utf-8
 encoding//web_basic/__init__.py=utf-8
 encoding//web_basic/captcha/api.py=utf-8

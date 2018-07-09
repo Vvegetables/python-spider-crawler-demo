@@ -2,7 +2,6 @@ MODULES_MANAGER_V2
 back_education_crawler.__init__|D:\github_repo\python\spider\demo\test\back_education_crawler\__init__.py
 back_education_crawler.crawler|D:\github_repo\python\spider\demo\test\back_education_crawler\crawler.py
 back_education_crawler.generate|D:\github_repo\python\spider\demo\test\back_education_crawler\generate.py
-back_education_crawler.mysql_connect|D:\github_repo\python\spider\demo\test\back_education_crawler\mysql_connect.py
 back_education_crawler.utils.__init__|D:\github_repo\python\spider\demo\test\back_education_crawler\utils\__init__.py
 back_education_crawler.utils.models|D:\github_repo\python\spider\demo\test\back_education_crawler\utils\models.py
 back_education_crawler.utils.process|D:\github_repo\python\spider\demo\test\back_education_crawler\utils\process.py
@@ -26,6 +25,8 @@ moduletestmain.sub1.ssub1.__init__|D:\github_repo\python\spider\demo\test\module
 moduletestmain.sub1.sub1|D:\github_repo\python\spider\demo\test\moduletestmain\sub1\sub1.py
 moduletestmain.sub2.__init__|D:\github_repo\python\spider\demo\test\moduletestmain\sub2\__init__.py
 self_mysql.__init__|D:\github_repo\python\spider\demo\test\self_mysql\__init__.py
+self_mysql.mongo_test|D:\github_repo\python\spider\demo\test\self_mysql\mongo_test.py
+self_mysql.mysql_connect|D:\github_repo\python\spider\demo\test\self_mysql\mysql_connect.py
 web_basic.__init__|D:\github_repo\python\spider\demo\test\web_basic\__init__.py
 web_basic.captcha.__init__|D:\github_repo\python\spider\demo\test\web_basic\captcha\__init__.py
 web_basic.captcha.api|D:\github_repo\python\spider\demo\test\web_basic\captcha\api.py
