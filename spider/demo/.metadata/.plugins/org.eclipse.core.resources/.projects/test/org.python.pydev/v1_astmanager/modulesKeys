@@ -24,6 +24,7 @@ moduletestmain.sub1.__init__|D:\github_repo\python\spider\demo\test\moduletestma
 moduletestmain.sub1.ssub1.__init__|D:\github_repo\python\spider\demo\test\moduletestmain\sub1\ssub1\__init__.py
 moduletestmain.sub1.sub1|D:\github_repo\python\spider\demo\test\moduletestmain\sub1\sub1.py
 moduletestmain.sub2.__init__|D:\github_repo\python\spider\demo\test\moduletestmain\sub2\__init__.py
+self_logger.__init__|D:\github_repo\python\spider\demo\test\self_logger\__init__.py
 self_mysql.__init__|D:\github_repo\python\spider\demo\test\self_mysql\__init__.py
 self_mysql.mongo_test|D:\github_repo\python\spider\demo\test\self_mysql\mongo_test.py
 self_mysql.mysql_connect|D:\github_repo\python\spider\demo\test\self_mysql\mysql_connect.py

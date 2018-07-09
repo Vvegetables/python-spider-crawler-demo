@@ -1,0 +1,12 @@
+DEBUG:root:This message should go to the log file
+DEBUG:root:This message should appear on the console
+WARNING:root:is when this event was logged.
+DEBUG:root:This message should go to the log file
+DEBUG:root:This message should appear on the console
+DEBUG:root:This message should go to the log file
+DEBUG:root:This message should appear on the console
+DEBUG:root:This message should go to the log file
+DEBUG:root:This message should appear on the console
+WARNING:root:is when this event was logged.
+DEBUG:root:This message should go to the log file
+DEBUG:root:This message should appear on the console
