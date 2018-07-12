@@ -1,4 +1,0 @@
-#coding=utf-8
-
-def sub2():
-    print 'sub2'

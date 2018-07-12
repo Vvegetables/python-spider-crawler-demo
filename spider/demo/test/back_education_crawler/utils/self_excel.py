@@ -31,7 +31,7 @@ def get_excel_data(path=None,sheet=None,row_id=1):
 def get_single_column_data(sheet,colum_id):
     container = []
     max_row = sheet.max_row      
-    for i in range(2,max_row+1):
+    for i in range(3,max_row+1):
         if not sheet.cell(row=i,column=colum_id).value:
             continue
         container.append(sheet.cell(row=i,column=colum_id).value)

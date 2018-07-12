@@ -24,6 +24,13 @@ LOGIN = dict(
     host = '192.168.2.212',
     port = '3306'
 )
+# LOGIN = dict(
+#     username = 'hanyj',
+#     password = 'CingHTa#1234',
+#     dbname = 'paTest',
+#     host = '118.31.168.208',
+#     port = '3306'
+# )
 
 
 engine = create_engine('mysql://{username}:{password}@{host}:{port}/{dbname}?charset=utf8'.format(**LOGIN))
@@ -79,9 +86,11 @@ class Sql:
         return self._s
  
     def __exit__(self, exc_type, exc_value, exc_tb):
-        self._s.commit()
-        self._s.close()
-        del self
+        try:
+            self._s.commit()
+        except:
+            self._s.close()
+            del self
 #����
 # ed_user = EducationNews(name='ed',fullname='ed jones',pas='pass')
 # _session.add(ed_user)

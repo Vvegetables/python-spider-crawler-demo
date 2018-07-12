@@ -1,6 +1,15 @@
 #coding=utf-8
+'''
+import re 
+>>p=re.compile('\s+') 
+>>new_string=re.sub(p,'',your_string) 
+'''
+import sys 
+reload(sys)
+sys.setdefaultencoding('utf-8')
 from datetime import datetime
 import os
+import re
 import socket
 import threading
 import time
@@ -14,11 +23,12 @@ import requests
 from education_crawler.models import Sql, EducationNews
 from education_crawler.utils.self_excel import excel_read, get_excel_cell_data, \
     get_single_column_data
+import json
 
 
 class SelfProcess:
     
-    def __init__(self,_start_url=None,deep = 2,path = None,timeout=5):
+    def __init__(self,_start_url=None,deep = 1,path = None,timeout=5):
         self.sheet = excel_read(path)
         self.url = get_single_column_data(self.sheet,3) or _start_url
         self.deep = deep
@@ -28,12 +38,16 @@ class SelfProcess:
         self.crawled_items = []
         self.sheettitle = []
         self.stop_flag = False
+        self.strip_spaces = re.compile('\s+')
+        self.encoding = None
     
         
     def spider(self):
         if not isinstance(self.url,(list,tuple)):
             self.url = [self.url]
         for k,e_url in enumerate(self.url,3):
+            q = self.url_q
+            self.url_q.queue.clear()
             try:
                 source = get_excel_cell_data(self.sheet,k,1) + '_' + get_excel_cell_data(self.sheet,k,2)
             except:
@@ -51,13 +65,23 @@ class SelfProcess:
                     _response = self.handle_url(c_url)
                     if int(_response.status_code) > 200:
                         with open('error.log','a') as f:
-                            f.write('error:'.encode('utf-8')+c_url.encode('utf-8')+os.linesep) 
+                            _error_dict = {}
+                            _error_dict['url'] = c_url 
+                            _error_dict['level'] = 'error'
+                            _error_dict['time'] = str(datetime.now())
+                            _error_dict['reason'] = '获得response'
+                            _error_dict['source'] = source
+                            f.write(json.dumps(_error_dict,ensure_ascii=False))  #.decode('utf8').encode('gb2312')
+                            f.write(os.linesep)
+            
                     _html = self.get_html(_response)
                     self.get_data(_html,e_url)
                     for item in self.crawled_items:
                         item.append(source)
                         self.url_q.put(item[1])
-                        self.data_q.put({'title':item[0],'link':item[1],'source':item[2]})
+                        if item[0]:
+                            self.data_q.put({'title':item[0],'link':item[1],'source':item[2]})
+#                             print item[0],item[1]
                     self.crawled_items = []
                 if self.url_q.empty():
                     break
@@ -100,16 +124,44 @@ class SelfProcess:
     def html_code(self, response):
         if hasattr(response, 'error'):
             return response
-        cD = chardet.detect(response.content)
-        CHARSET = 'utf8'
-        charset = cD.get('encoding', CHARSET)
-        response.encoding = charset
+#         cD = chardet.detect(response.content)
+#         CHARSET = 'utf-8'
+#         charset = response.encoding
+#         self.encoding = charset
+#         if charset.startswith('gb') or charset.startswith('GB') or charset.startswith('ISO') or charset.startswith('iso'):
+#             self.encoding = 'gb2312'
+#         else:
+#             self.encoding = 'utf-8'
+#         response.encoding = charset
         return response
     
     def get_html(self,response):
         if hasattr(response,'error'):
             return None
-        text = response.text.replace('?xml','head')
+        charset = response.encoding
+        self.encoding = charset
+        if charset and (charset.startswith('gb') or charset.startswith('GB')):
+            self.encoding = 'GBK'
+        elif charset and (charset.startswith('ISO') or charset.startswith('iso')):
+            self.encoding = 'gb2312'
+        elif charset:
+            self.encoding = 'utf-8'
+#         response.encoding = charset
+        text = response.content.replace('?xml','head')
+#         response.content.decode('GBK')
+        try:
+            text = text.decode(self.encoding)
+        except:
+            try:
+                text = text.decode('GBK')
+            except:
+                try:
+                    text = text.decode('gb2312')
+                except:
+                    try:
+                        text = text.decode('utf-8')
+                    except:
+                        pass
         return etree.HTML(text)
     
     def get_data(self,html,main_url):
@@ -119,23 +171,26 @@ class SelfProcess:
         for info in infos:
             url = ''.join(info.xpath('@href'))
             abs_url = urljoin(main_url, url)
-            if abs_url == 'http://www.cas.cn/syky/201807/t20180702_4656749.shtml':
-                pass
-            if abs_url not in self.spided_urls:
+#             if abs_url == 'http://www.cas.cn/syky/201807/t20180702_4656749.shtml':
+#                 pass
+            if abs_url in self.url or (abs_url not in self.spided_urls):
                 title = info.xpath('string(.)').strip()
                 _title = ''.join(info.xpath('@title')).strip()
                 
                 title = _title if _title else title
                 
-                if not title:
-                    title = ''.join(html.xpath('//head/title/text()')).strip()
+#                 if not title:
+#                     title = ''.join(html.xpath('//head/title/text()')).strip()
 #                 if not title.strip():
 #                     title = ''.join(info.xpath('//img/@title'))
+                if title:
+                    title = re.sub(self.strip_spaces,'',title)
+                abs_url = re.sub(self.strip_spaces,'',abs_url)
                 self.crawled_items.append([title,abs_url])
                 self.spided_urls.add(abs_url)
     
     def save_database(self):
-        count = 1
+        count = 0
         with Sql() as s:
             while True:
                 _data = self.data_q.get()
@@ -148,23 +203,40 @@ class SelfProcess:
                     continue
                 
                 for key,value in _data.items():
-                    if isinstance(value,unicode): 
-                        _data[key] = value.encode('utf-8')
+                    if not isinstance(value,unicode): 
+                        detect_res = chardet.detect(value)
+                        enc = detect_res.get('encoding',None)
+                        if enc:
+                            value.decode(enc).encode('utf-8')
+                    else:
+                        value = value.encode('utf-8')        
+                    _data[key] = value
                         
-                if (_data.get('title') is None) or (not(_data.get('title').strip())):
+                if (_data.get('title') is None) or (not(_data.get('title').strip())):# or (not(_data.get('link').endswith('htm') or _data.get('link').endswith('html'))):
                     continue
 #                 logging.info(_data)
-                if not s.query(EducationNews).filter(EducationNews.title == _data.get('title'),EducationNews.link == _data.get('link')).first():#Data.teacher == _data.get('teacher'), 
-                    _data['createtime'] = datetime.now()
-                    s.add(
-                        EducationNews(**_data)
-                    )
-                    count += 1
-                    print("download:" + str(count) + ',' + datetime.now().strftime("%Y-%m-%d %H:%I:%S"))
-                else:
-                    print "download:pass," + datetime.now().strftime("%Y-%m-%d %H:%I:%S")
-                if count % 5 == 0:
-                    s.commit()
+                try:
+                    if not s.query(EducationNews).filter(EducationNews.link == _data.get('link')).first():#EducationNews.title == _data.get('title'),
+                        _data['createtime'] = datetime.now()
+                        s.add(
+                            EducationNews(**_data)
+                        )
+                        count += 1
+                        print("download:" + str(count) + ',' + datetime.now().strftime("%Y-%m-%d %H:%I:%S"))
+#                     else:
+#                         print "download:pass," + datetime.now().strftime("%Y-%m-%d %H:%I:%S")
+                    
+                    if count % 5 == 0:
+                        s.commit()
+                except:
+                    with open('error.log','a') as f:
+                        _error_dict = {}
+                        _error_dict.update(_data)
+                        _error_dict['level'] = 'error'
+                        _error_dict['time'] = str(datetime.now())
+                        _error_dict['reason'] = '数据库插入'
+                        f.write(json.dumps(_error_dict,ensure_ascii=False))  #.decode('utf8').encode('gb2312')
+                        f.write(os.linesep)
     def run(self):
         t1 = threading.Thread(target=self.spider)
         t2 = threading.Thread(target=self.save_database)

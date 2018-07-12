@@ -1,8 +1,0 @@
-import sys
-
-sys.path
-
-print sys.path
-import moduletestmain.sub1.ssub1.ssub1
-# 
-# ssub1()

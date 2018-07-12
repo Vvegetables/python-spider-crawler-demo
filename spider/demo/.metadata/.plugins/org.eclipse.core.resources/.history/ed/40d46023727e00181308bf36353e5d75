@@ -1,8 +1,0 @@
-#coding=utf-8
-from education_crawler.utils.process import SelfProcess
-
-
-if __name__ == '__main__':
-    path = (__file__)
-    print path
-#     SelfProcess()

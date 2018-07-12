@@ -30,7 +30,7 @@ engine = create_engine('mysql://{username}:{password}@{host}:{port}/{dbname}?cha
 
 Base = declarative_base()
 
-class EducationNews(Base): #User.__table__²é¿´ÐÅÏ¢
+class EducationNews(Base): #User.__table__ï¿½é¿´ï¿½ï¿½Ï¢
     __tablename__ = 'educationnews'
     id = Column('id',Integer,primary_key=True)
     title = Column('title',String(length=1000))
@@ -79,16 +79,18 @@ class Sql:
         return self._s
  
     def __exit__(self, exc_type, exc_value, exc_tb):
-        self._s.commit()
-        self._s.close()
-        del self
-#ÐÂÔö
+        try:
+            self._s.commit()
+        except:
+            self._s.close()
+            del self
+#ï¿½ï¿½ï¿½ï¿½
 # ed_user = EducationNews(name='ed',fullname='ed jones',pas='pass')
 # _session.add(ed_user)
 # 
 # 
-# #²éÑ¯
+# #ï¿½ï¿½Ñ¯
 # our_user = _session.query(EducationNews).filter_by(name='ed').first()
 # 
-# #Ìá½»µ½Êý¾Ý¿â
+# #ï¿½á½»ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½
 # _session.commit()
