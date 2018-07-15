@@ -35,16 +35,20 @@ class SelfProcess:
         self.stop_flag = False
         self.strip_spaces = re.compile('\s+')
         self.encoding = None
+        self.urlname = None
+        self.titles = set()
     
         
     def spider(self):
         if not isinstance(self.url,(list,tuple)):
             self.url = [self.url]
         for k,e_url in enumerate(self.url,3):
-            q = self.url_q
+#             q = self.url_q
             self.url_q.queue.clear()
             try:
-                source = get_excel_cell_data(self.sheet,k,1) + '_' + get_excel_cell_data(self.sheet,k,2)
+                address = get_excel_cell_data(self.sheet,k,1)
+                source = address + '_' + get_excel_cell_data(self.sheet,k,2)
+                self.urlname = address
             except:
                 source = ''
 #             e_url = get_excel_cell_data(_url,k,3)
@@ -74,7 +78,9 @@ class SelfProcess:
                     for item in self.crawled_items:
                         item.append(source)
                         self.url_q.put(item[1])
-                        if item[0]:
+                        if item[0] and '陕西' in self.urlname:
+                            self.data_q.put({'title':item[0],'link':item[1],'source':item[2],'check_title':'1'})
+                        else:
                             self.data_q.put({'title':item[0],'link':item[1],'source':item[2]})
 #                             print item[0],item[1]
                     self.crawled_items = []
@@ -178,11 +184,17 @@ class SelfProcess:
 #                     title = ''.join(html.xpath('//head/title/text()')).strip()
 #                 if not title.strip():
 #                     title = ''.join(info.xpath('//img/@title'))
-                if title:
+                if title and len(title) > 8:
                     title = re.sub(self.strip_spaces,'',title)
-                abs_url = re.sub(self.strip_spaces,'',abs_url)
-                self.crawled_items.append([title,abs_url])
-                self.spided_urls.add(abs_url)
+                    abs_url = re.sub(self.strip_spaces,'',abs_url)
+                    if self.urlname and ('陕西' in self.urlname):
+                        if title and title not in self.titles:
+                            self.titles.add(title)
+                            self.crawled_items.append([title,abs_url])
+                    else:
+                        self.crawled_items.append([title,abs_url])
+                        
+                    self.spided_urls.add(abs_url)
     
     def save_database(self):
         count = 0
@@ -211,17 +223,26 @@ class SelfProcess:
                     continue
 #                 logging.info(_data)
                 try:
-                    if not s.query(EducationNews).filter(EducationNews.link == _data.get('link')).first():#EducationNews.title == _data.get('title'),
-                        _data['createtime'] = datetime.now()
-                        s.add(
-                            EducationNews(**_data)
-                        )
-                        count += 1
-                        print("download:" + str(count) + ',' + datetime.now().strftime("%Y-%m-%d %H:%I:%S"))
-#                     else:
-#                         print "download:pass," + datetime.now().strftime("%Y-%m-%d %H:%I:%S")
+                    if _data.has_key('check_title'):
+                        if not s.query(EducationNews).filter(EducationNews.title == _data.get('title')).first():#EducationNews.title == _data.get('title'),
+                            _data['createtime'] = datetime.now()
+                            s.add(
+                                EducationNews(**_data)
+                            )
+                            count += 1
+                            print("download:" + str(count) + ',' + datetime.now().strftime("%Y-%m-%d %H:%I:%S"))
+                    else: 
+                        if not s.query(EducationNews).filter(EducationNews.link == _data.get('link')).first():#EducationNews.title == _data.get('title'),
+                            _data['createtime'] = datetime.now()
+                            s.add(
+                                EducationNews(**_data)
+                            )
+                            count += 1
+                            print("download:" + str(count) + ',' + datetime.now().strftime("%Y-%m-%d %H:%I:%S"))
+    #                     else:
+    #                         print "download:pass," + datetime.now().strftime("%Y-%m-%d %H:%I:%S")
                     
-                    if count % 5 == 0:
+                    if count > 0 and count % 5 == 0:
                         s.commit()
                 except:
                     with open('error.log','a') as f:
@@ -230,6 +251,8 @@ class SelfProcess:
                         _error_dict['level'] = 'error'
                         _error_dict['time'] = str(datetime.now())
                         _error_dict['reason'] = '数据库插入'
+                        if _error_dict.has_key('createtime'):
+                            _error_dict['createtime'] = str(_error_dict['createtime'])
                         f.write(json.dumps(_error_dict,ensure_ascii=False))  #.decode('utf8').encode('gb2312')
                         f.write(os.linesep)
     def run(self):

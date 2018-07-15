@@ -1,0 +1,49 @@
+-- VERSION_4
+-- START DISKCACHE_2
+D:\github_repo\python\spider\demo\.metadata\.plugins\org.eclipse.core.resources\.projects\selfblogproject\com.python.pydev.analysis\v2_indexcache
+main.tests|1531451551656831000|D:\github_repo\python\spider\demo\selfblogproject\main\tests.py
+main.views|1531451551666830000|D:\github_repo\python\spider\demo\selfblogproject\main\views.py
+main.__init__|1531451551667824000|D:\github_repo\python\spider\demo\selfblogproject\main\__init__.py
+main.migrations.__init__|1531451551669824000|D:\github_repo\python\spider\demo\selfblogproject\main\migrations\__init__.py
+selfblogproject.settings|1531451453904262000|D:\github_repo\python\spider\demo\selfblogproject\selfblogproject\settings.py
+main.apps|1531451551633829000|D:\github_repo\python\spider\demo\selfblogproject\main\apps.py
+selfblogproject.urls|1531451237381300000|D:\github_repo\python\spider\demo\selfblogproject\selfblogproject\urls.py
+main.admin|1531451551622830000|D:\github_repo\python\spider\demo\selfblogproject\main\admin.py
+selfblogproject.__init__|1531451198943683000|D:\github_repo\python\spider\demo\selfblogproject\selfblogproject\__init__.py
+selfblogproject.wsgi|1531451237347296000|D:\github_repo\python\spider\demo\selfblogproject\selfblogproject\wsgi.py
+main.models|1531451551644831000|D:\github_repo\python\spider\demo\selfblogproject\main\models.py
+manage|1531451237313295000|D:\github_repo\python\spider\demo\selfblogproject\manage.py
+-- END DISKCACHE
+-- START DICTIONARY
+5
+1=selfblogproject.settings
+3=main.apps
+4=selfblogproject.urls
+5=MainConfig
+2=selfblogproject.wsgi
+-- END DICTIONARY
+-- START TREE 1
+18
+all|1|ALLOWED_HOSTS!11@
+app|1|application!19@
+aut|1|AUTH_PASSWORD_VALIDATORS!11@
+bas|1|BASE_DIR!11@
+dat|1|DATABASES!11@
+deb|1|DEBUG!11@
+ins|1|INSTALLED_APPS!11@
+lan|1|LANGUAGE_CODE!11@
+mai|1|MainConfig!25@
+mid|1|MIDDLEWARE!11@
+roo|1|ROOT_URLCONF!11@
+sec|1|SECRET_KEY!11@
+sta|1|STATICFILES_DIRS!11@
+tem|1|TEMPLATES!11@
+tim|1|TIME_ZONE!11@
+url|1|urlpatterns!35@
+use|3|USE_TZ!11@USE_I18N!11@USE_L10N!11@
+wsg|1|WSGI_APPLICATION!11@
+-- END TREE
+-- START TREE 2
+1
+nam|1|name!5&27@
+-- END TREE

@@ -1,0 +1,13 @@
+MODULES_MANAGER_V2
+main.__init__|D:\github_repo\python\spider\demo\selfblogproject\main\__init__.py
+main.admin|D:\github_repo\python\spider\demo\selfblogproject\main\admin.py
+main.apps|D:\github_repo\python\spider\demo\selfblogproject\main\apps.py
+main.migrations.__init__|D:\github_repo\python\spider\demo\selfblogproject\main\migrations\__init__.py
+main.models|D:\github_repo\python\spider\demo\selfblogproject\main\models.py
+main.tests|D:\github_repo\python\spider\demo\selfblogproject\main\tests.py
+main.views|D:\github_repo\python\spider\demo\selfblogproject\main\views.py
+manage|D:\github_repo\python\spider\demo\selfblogproject\manage.py
+selfblogproject.__init__|D:\github_repo\python\spider\demo\selfblogproject\selfblogproject\__init__.py
+selfblogproject.settings|D:\github_repo\python\spider\demo\selfblogproject\selfblogproject\settings.py
+selfblogproject.urls|D:\github_repo\python\spider\demo\selfblogproject\selfblogproject\urls.py
+selfblogproject.wsgi|D:\github_repo\python\spider\demo\selfblogproject\selfblogproject\wsgi.py
