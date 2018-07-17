@@ -21,6 +21,7 @@ from utils.self_excel import excel_read, get_excel_cell_data, \
     get_single_column_data
 
 
+
 class SelfProcess:
     
     def __init__(self,_start_url=None,deep = 1,path = None,timeout=5):
@@ -37,6 +38,7 @@ class SelfProcess:
         self.encoding = None
         self.urlname = None
         self.titles = set()
+        self.cmp_title = ['陕西','广西']
     
         
     def spider(self):
@@ -78,7 +80,7 @@ class SelfProcess:
                     for item in self.crawled_items:
                         item.append(source)
                         self.url_q.put(item[1])
-                        if item[0] and '陕西' in self.urlname:
+                        if item[0] and (filter(lambda x:x in self.urlname,self.cmp_title)):
                             self.data_q.put({'title':item[0],'link':item[1],'source':item[2],'check_title':'1'})
                         else:
                             self.data_q.put({'title':item[0],'link':item[1],'source':item[2]})
@@ -187,7 +189,7 @@ class SelfProcess:
                 if title and len(title) > 8:
                     title = re.sub(self.strip_spaces,'',title)
                     abs_url = re.sub(self.strip_spaces,'',abs_url)
-                    if self.urlname and ('陕西' in self.urlname):
+                    if self.urlname and (filter(lambda x:x in self.urlname,self.cmp_title)):
                         if title and title not in self.titles:
                             self.titles.add(title)
                             self.crawled_items.append([title,abs_url])

@@ -1,0 +1,139 @@
+#coding=utf-8
+
+from collections import OrderedDict
+import os
+from urlparse import urljoin
+
+from lxml import etree
+from openpyxl.reader.excel import load_workbook
+from openpyxl.workbook.workbook import Workbook
+import requests
+from sqlalchemy.engine import create_engine
+from sqlalchemy.ext.declarative.api import declarative_base
+from sqlalchemy.orm.session import sessionmaker
+from sqlalchemy.sql.schema import Column
+from sqlalchemy.sql.sqltypes import Integer, String, Text, DateTime
+
+import MySQLdb as mysqldb
+from self_mysql.mysql_connect import MysqlConnect
+
+
+LOGIN = dict(
+    username = 'ct',
+    password = 'IhadKD#4321',
+    dbname = 'innerweb',
+    host = '47.96.253.99',
+    port = '3306'
+)
+
+
+engine = create_engine('mysql://{username}:{password}@{host}:{port}/{dbname}?charset=utf8'.format(**LOGIN))
+
+Base = declarative_base()
+
+#college,major,direction,method,teacher,subject
+
+class DoctorTable(Base): #User.__table__�鿴��Ϣ
+    __tablename__ = 'doctor_lib'
+    id = Column('id',Integer,primary_key=True)
+    college = Column('college',String(length=1000))
+    major = Column('major',String(length=1000))
+    direction = Column('direction',String(length=1000))
+    method = Column('method',String(length=1000))
+    teacher = Column('teacher',String(length=1000))
+    subject = Column('subject',String(length=1000))
+    
+    
+    def __repr__(self):
+        return '{}'.format(self.id)
+
+wb = load_workbook("./folder/doctor_link.xlsx")
+
+sheet = wb.get_sheet_by_name('Sheet1')
+
+max_row = sheet.max_row
+print max_row
+
+main_urls = []
+
+for i in range(1,max_row+1):
+    if sheet.cell(row=i,column=1).value:
+        main_urls.append((sheet.cell(row=i,column=1).value,sheet.cell(row=i,column=2).value))
+        
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
+    'Host': 'yz.chsi.com.cn',
+    'Connection': 'keep-alive',
+    'Cookie': 'JSESSIONID=B5A3AB6FF62FCAC28B5D384B97178D66; aliyungf_tc=AQAAAAErb30oygEAsNHMc3ESwoqTGvsj; acw_tc=AQAAACoetglA3wEAsNHMcwJ3Q9K0Ircf; _ga=GA1.3.550795652.1531797584; _gid=GA1.3.594448128.1531797584; __utma=229973332.550795652.1531797584.1531804937.1531804937.1; __utmc=229973332; __utmz=229973332.1531804937.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); JSESSIONID=16FE4628C836081AA16C643A29566225; __utmb=229973332.3.10.1531804937; _gat_gtag_UA_100524_7=1'
+}        
+        
+for _tuple in main_urls[:1]:
+    retry = 2
+    while retry:
+        try:
+            response = requests.get(url=_tuple[1],headers=headers,timeout=20)      
+            text = response.text
+        except Exception,e:
+            print str(e)
+            retry -= 1
+            continue
+        break
+    
+    if not retry:
+        with open('fail.log','a') as f:
+            f.write('fail:' + _tuple[1].encode('utf-8'))
+            f.write(os.linesep)
+    
+    html = etree.HTML(text)
+    _table = html.xpath('//table[@id="result_bsml_table"]')#.extract_first()
+    _trs = _table[0].xpath("//tr") if _table else []
+    
+    container = []
+    
+    td_nums = len(_table[0].xpath('//th'))
+    _td_names = [0] * td_nums
+    
+    for _tr in _trs:
+        tds = _tr.xpath('td')
+        if not tds: #th
+            continue
+        temp = [0] * td_nums
+#         e = 0
+        ltd = len(tds)
+        tds = ([0] * (td_nums-ltd)) + tds
+        for i,td in enumerate(tds,0):
+            if isinstance(td,int):  #补齐
+                temp[i] = _td_names[i]
+                continue
+            try:    
+                span = td.xpath('@rowspan')[0].strip()
+            except IndexError:
+                span = 1
+                
+            _title = td.xpath('string(.)').strip()
+            
+            if int(span) > 1:
+                _td_names[i] = _title
+                temp[i] = _title
+            else:
+                temp[i] = _title
+                
+        container.append({'college':temp[0],'major':temp[1],'direction':temp[2],'method':temp[3],'teacher':temp[4],'subject':temp[5]})
+        
+#     _connect =MysqlConnect('192.168.2.212','hanyj','Ihad#kd1234','CrawlerDB') 
+#     
+#     _connect.batch_insert('educationnews', fields=('college','major','direction','method','teacher','subject'), values=container)
+    
+#     db = mysqldb.connect('192.168.2.212','hanyj','Ihad#kd1234','CrawlerDB',charset='utf8',port=3306)
+#     cursor = db.cursor(cursorclass=mysqldb.cursors.DictCursor)
+#     cursor.executemany("Insert into doctor_lib(college,major,direction,method,teacher,subject) values('%s','%s','%s','%s','%s','%s')",container)
+        
+    session = sessionmaker(bind=engine)
+    s = session()
+    s.execute(DoctorTable.__table__.insert(),
+              container)
+        
+        
+        
+        
+        

@@ -10,6 +10,7 @@ back_education_crawler.utils.url_redis|D:\github_repo\python\spider\demo\test\ba
 decorator_test.__init__|D:\github_repo\python\spider\demo\test\decorator_test\__init__.py
 decorator_test._property|D:\github_repo\python\spider\demo\test\decorator_test\_property.py
 decorator_test.self_decorator|D:\github_repo\python\spider\demo\test\decorator_test\self_decorator.py
+doctor_lib|D:\github_repo\python\spider\demo\test\doctor_lib.py
 education_crawler.__init__|D:\github_repo\python\spider\demo\test\education_crawler\__init__.py
 education_crawler.crawler|D:\github_repo\python\spider\demo\test\education_crawler\crawler.py
 education_crawler.generate|D:\github_repo\python\spider\demo\test\education_crawler\generate.py
@@ -19,6 +20,7 @@ education_crawler.utils.__init__|D:\github_repo\python\spider\demo\test\educatio
 education_crawler.utils.process|D:\github_repo\python\spider\demo\test\education_crawler\utils\process.py
 education_crawler.utils.self_excel|D:\github_repo\python\spider\demo\test\education_crawler\utils\self_excel.py
 education_crawler.utils.url_redis|D:\github_repo\python\spider\demo\test\education_crawler\utils\url_redis.py
+kejidaxue.__init__|D:\github_repo\python\spider\demo\test\kejidaxue\__init__.py
 moduletestmain.__init__|D:\github_repo\python\spider\demo\test\moduletestmain\__init__.py
 moduletestmain.run|D:\github_repo\python\spider\demo\test\moduletestmain\run.py
 moduletestmain.sub1.__init__|D:\github_repo\python\spider\demo\test\moduletestmain\sub1\__init__.py

@@ -1,0 +1,23 @@
+#coding=utf-8
+
+from lxml import etree
+import requests
+
+
+pageSize = 7
+main_a_hrefs = []
+
+for i in range(1,pageSize+1):
+    response = requests.get(
+        url = 'http://admission.ucas.ac.cn/info/ZhaoshengDanwei/9adf9e50-424b-44c8-b2dc-900ef9344373?page=' + str(i),
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'}
+    )
+    
+    html = etree.HTML(response.content)
+    
+
+    _a_hrefs = html.xpath("//div[@class='b-pagecontent']//tr//a/@href")
+    
+    main_a_hrefs.extend(_a_hrefs)
+    
+print main_a_hrefs

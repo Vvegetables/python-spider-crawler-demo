@@ -1,0 +1,12 @@
+#coding = utf-8
+
+from lxml import etree
+import requests
+
+
+response = requests.get(
+    url = 'http://admission.ucas.ac.cn/info/ZhaoshengDanwei/9adf9e50-424b-44c8-b2dc-900ef9344373',
+    header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'}
+)
+
+etree.html(response.content)

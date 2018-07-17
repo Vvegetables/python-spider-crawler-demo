@@ -1,0 +1,77 @@
+#coding=utf-8
+
+from collections import OrderedDict
+from urlparse import urljoin
+
+from lxml import etree
+from openpyxl.reader.excel import load_workbook
+from openpyxl.workbook.workbook import Workbook
+import requests
+
+from self_mysql.mysql_connect import MysqlConnect
+
+
+wb = load_workbook("./folder/doctor_link.xlsx")
+
+sheet = wb.get_sheet_by_name('Sheet1')
+
+max_row = sheet.max_row
+print max_row
+
+main_urls = []
+
+for i in range(1,max_row+1):
+    if sheet.cell(row=i,column=1).value:
+        main_urls.append((sheet.cell(row=i,column=1).value,sheet.cell(row=i,column=2).value))
+        
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
+}        
+        
+for _tuple in main_urls[:1]:
+    try:
+        response = requests.get(url=_tuple[1],headers=headers,timeout=8)      
+        text = response.text
+    except Exception,e:
+        print str(e)
+        continue
+    
+    html = etree.HTML(text)
+    _table = html.xpath('//table[@id="result_bsml_table"]')
+    _trs = _table.xpath("//tr")
+    
+    container = []
+    
+    td_nums = len(_table.xpath('//th'))
+    _td_names = [0] * td_nums
+    
+    for _tr in _trs:
+        tds = _tr.xpath('td')
+        temp = [0] * td_nums
+        e = 0
+        for i,td in enumerate(tds,0):
+            
+            span = td.xpath('@rowspan')
+            _title = td.xpath('string(.)')
+            
+            if int(span) > 1:
+                _td_names[i] = (span,_title)
+                temp[e+i] = _title
+            else:
+                temp[e] = _td_names[e]
+                
+        container.append(temp)
+        
+_connect =MysqlConnect('192.168.2.212','hanyj','Ihad#kd1234','CrawlerDB') 
+
+_connect.batch_insert('educationnews', fields=('college','major','direction','method','teacher','subject'), values=container)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
