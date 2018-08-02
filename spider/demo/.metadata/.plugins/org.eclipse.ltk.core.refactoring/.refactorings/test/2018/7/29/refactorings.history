@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;test/folder/博导链接.xlsx&apos; to &apos;doctor_link.xlsx&apos;" description="Rename resource &apos;博导链接.xlsx&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="folder/博导链接.xlsx" name="doctor_link.xlsx" stamp="1531797052070" updateReferences="true"/>
+</session>

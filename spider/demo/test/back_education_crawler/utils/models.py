@@ -18,10 +18,10 @@ from sqlalchemy.sql.sqltypes import Integer, String, DateTime,Text
 from sqlalchemy.orm import sessionmaker
 
 LOGIN = dict(
-    username = 'hanyj',
-    password = 'Ihad#kd1234',
-    dbname = 'CrawlerDB',
-    host = '192.168.2.212',
+    username = 'ct',
+    password = 'IhadKD#4321',
+    dbname = 'innerweb',
+    host = '47.96.253.99',
     port = '3306'
 )
 

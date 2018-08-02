@@ -1,0 +1,48 @@
+#coding=utf-8
+
+from lxml import etree
+import requests
+from urlparse import urljoin
+from collections import OrderedDict
+
+
+pageSize = 7
+main_a_hrefs = []
+
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'}
+
+for i in range(1,pageSize+1):
+    response = requests.get(
+        url = 'http://admission.ucas.ac.cn/info/ZhaoshengDanwei/9adf9e50-424b-44c8-b2dc-900ef9344373?page=' + str(i),
+        headers = headers
+    )
+    
+    html = etree.HTML(response.content)
+    
+
+    _a_hrefs = html.xpath("//div[@class='b-pagecontent']//tr//a/@href")
+    
+    main_a_hrefs.extend(_a_hrefs)
+    
+#print main_a_hrefs
+ab_urls = map(lambda x:urljoin('http://admission.ucas.ac.cn/'),main_a_hrefs)
+
+
+_dict = OrderedDict()
+for _u in ab_urls:
+    response = requests.get(url=_u,headers=headers)
+    html = etree.HTML(response.content)
+    _as = html.xpath("//table[@id='detail']//a")
+    
+    for _a in _as:
+        title = _a.xpath('string(.)').strip()
+        if title:
+            _href = ''.join(_a.xpath('@href'))
+            ab_urls[_href] = title
+
+print ab_urls
+    
+    
+    
+    
+    
