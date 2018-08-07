@@ -1,9 +1,11 @@
 eclipse.preferences.version=1
 encoding//back_education_crawler/crawler.py=utf-8
 encoding//back_education_crawler/generate.py=utf-8
+encoding//back_education_crawler/utils/dynamic_func.py=utf-8
 encoding//back_education_crawler/utils/models.py=utf-8
 encoding//back_education_crawler/utils/process.py=utf-8
 encoding//back_education_crawler/utils/self_excel.py=utf-8
+encoding//back_education_crawler/utils/url_redis.py=utf-8
 encoding//decorator_test/_property.py=utf-8
 encoding//decorator_test/self_decorator.py=utf-8
 encoding//education_crawler/__init__.py=utf-8
