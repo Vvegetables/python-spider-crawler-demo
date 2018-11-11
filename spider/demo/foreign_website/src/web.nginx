@@ -1,0 +1,10 @@
+
+server {
+    listen 80;
+    location / {
+        proxy_pass http://localhost:2000;
+    }
+    location ^/(images|javascript|js|css|flash|media|static)/ {
+        expires 30d;
+    }
+}

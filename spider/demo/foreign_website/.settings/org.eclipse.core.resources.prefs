@@ -1,0 +1,9 @@
+eclipse.preferences.version=1
+encoding//src/Test/test_translate.py=utf-8
+encoding//src/my_Model/__init__.py=utf-8
+encoding//src/run_spider.py=utf-8
+encoding//src/spider/Content.py=utf-8
+encoding//src/spider/Schedule.py=utf-8
+encoding//src/utils/supervisor.py=UTF-8
+encoding//src/utils/url_redis.py=utf-8
+encoding//src/utils/util.py=utf-8

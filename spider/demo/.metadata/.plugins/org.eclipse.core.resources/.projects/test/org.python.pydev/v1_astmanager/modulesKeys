@@ -12,15 +12,6 @@ decorator_test.__init__|E:\github_repo\python\spider\demo\test\decorator_test\__
 decorator_test._property|E:\github_repo\python\spider\demo\test\decorator_test\_property.py
 decorator_test.self_decorator|E:\github_repo\python\spider\demo\test\decorator_test\self_decorator.py
 doctor_lib|E:\github_repo\python\spider\demo\test\doctor_lib.py
-education_crawler.__init__|E:\github_repo\python\spider\demo\test\education_crawler\__init__.py
-education_crawler.crawler|E:\github_repo\python\spider\demo\test\education_crawler\crawler.py
-education_crawler.generate|E:\github_repo\python\spider\demo\test\education_crawler\generate.py
-education_crawler.models|E:\github_repo\python\spider\demo\test\education_crawler\models.py
-education_crawler.test|E:\github_repo\python\spider\demo\test\education_crawler\test.py
-education_crawler.utils.__init__|E:\github_repo\python\spider\demo\test\education_crawler\utils\__init__.py
-education_crawler.utils.process|E:\github_repo\python\spider\demo\test\education_crawler\utils\process.py
-education_crawler.utils.self_excel|E:\github_repo\python\spider\demo\test\education_crawler\utils\self_excel.py
-education_crawler.utils.url_redis|E:\github_repo\python\spider\demo\test\education_crawler\utils\url_redis.py
 kejidaxue.__init__|E:\github_repo\python\spider\demo\test\kejidaxue\__init__.py
 moduletestmain.__init__|E:\github_repo\python\spider\demo\test\moduletestmain\__init__.py
 moduletestmain.run|E:\github_repo\python\spider\demo\test\moduletestmain\run.py

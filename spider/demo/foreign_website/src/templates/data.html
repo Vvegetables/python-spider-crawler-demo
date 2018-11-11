@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block main %}
+<form action="/data" method="post">
+    <select name="universitys" class="universitys">
+        </select>
+    <select name="departments" class="departments">
+        </select>
+</form>
+<div class="data-list">
+    <table class="table table-striped data">
+        <thead>
+            <tr>
+                <th>学校</th>
+                <th>部门</th>
+                <th>教师</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+<nav>
+    <ul class="pagination">
+    </ul>
+</nav>
+    <script src="../static/js/self/ka.js"></script>
+    <script src="../static/js/self/data.js"></script>
+{% endblock %}

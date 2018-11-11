@@ -1,0 +1,5 @@
+settings.py
+log.txt
+spided.json
+*.pyc
+stop_word.txt

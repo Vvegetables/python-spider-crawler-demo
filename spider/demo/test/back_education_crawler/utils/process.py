@@ -1,26 +1,24 @@
 #coding=utf-8
-import Queue
 from datetime import datetime
+from imp import reload
 import json
 import os
+from queue import Queue
 import re
 import socket
 import sys 
 import threading
 import time
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 import chardet
 from lxml import etree
 import requests
 
-from models import Sql, EducationNews,db_get_urls,db_get_titles,ForeignEduNews
-from back_education_crawler.utils.self_excel import excel_read, get_excel_cell_data, \
+from .dynamic_func import DynamicJSHandler
+from .self_excel import excel_read, get_excel_cell_data, \
     get_single_column_data
-from back_education_crawler.utils.dynamic_func import DynamicJSHandler
-
-reload(sys)
-sys.setdefaultencoding('utf-8')
+from .models import Sql, EducationNews, db_get_urls, db_get_titles, ForeignEduNews
 
 
     
@@ -32,8 +30,8 @@ class SelfProcess:
         self.url = db_get_urls(_type)#get_single_column_data(self.sheet,3) or _start_url
         self.deep = deep
         self.timeout = timeout
-        self.data_q = Queue.Queue()
-        self.url_q = Queue.Queue()
+        self.data_q = Queue()
+        self.url_q = Queue()
         self.spided_urls = Sql(_model=EducationNews).get_all_spidered_urls()
         self.crawled_items = []
 #         self.sheettitle = []
@@ -73,7 +71,7 @@ class SelfProcess:
                         continue
                     _response = self.handle_url(c_url)
                     if int(_response.status_code) > 200:
-                        with open('error.log','a') as f:
+                        with open('error.log','a',encoding="utf-8") as f:
                             _error_dict = {}
                             _error_dict['url'] = c_url 
                             _error_dict['level'] = 'error'
@@ -88,11 +86,11 @@ class SelfProcess:
                     for item in self.crawled_items:
                         item.append(source)
                         self.url_q.put(item[1])
-                        if item[0] and (filter(lambda x:x in self.urlname,self.cmp_title)):
+                        if item[0] and list(filter(lambda x:x in self.urlname,self.cmp_title)):
                             self.data_q.put({'title':item[0],'link':item[1],'source':item[2],'check_title':'1'})
                         else:
                             self.data_q.put({'title':item[0],'link':item[1],'source':item[2]})
-#                             print item[0],item[1]
+#                             #print item[0],item[1]
                     self.crawled_items = []
                 if self.url_q.empty():
                     break
@@ -109,16 +107,16 @@ class SelfProcess:
             'GET': requests.get,
             'POST': requests.post,
         }
-        headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'}
+        headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'}
         try:
             response = r.get(method)(url, headers=headers,timeout=timeout, *args, **kwargs)
             if 'Connection' in response.headers.keys():
                 del response.headers['Connection']
         except socket.timeout:
-            print 'timeout'
+            #print 'timeout'
             response = self.err_response()
-        except Exception,e:
-            print e
+        except Exception as e:
+            #print e
             response = self.err_response()
         response = self.html_code(response)
         return response
@@ -160,7 +158,8 @@ class SelfProcess:
         elif charset:
             self.encoding = 'utf-8'
 #         response.encoding = charset
-        text = response.content.replace('?xml','head')
+#         text = response.content.replace('?xml','head')
+        text = response.content
 #         response.content.decode('GBK')
         try:
             text = text.decode(self.encoding)
@@ -198,8 +197,9 @@ class SelfProcess:
 #                 if not title.strip():
 #                     title = ''.join(info.xpath('//img/@title'))
                 if title and len(title) > 8:
-                    title = re.sub(self.strip_spaces,'',title)
-                    abs_url = re.sub(self.strip_spaces,'',abs_url)
+                    if self._type == 0:
+                        title = re.sub(self.strip_spaces,'',title)
+                        abs_url = re.sub(self.strip_spaces,'',abs_url)
                     if self.urlname and (filter(lambda x:x in self.urlname,self.cmp_title)):
                         if title and title not in self.titles:
                             self.titles.add(title)
@@ -209,7 +209,7 @@ class SelfProcess:
                     count += 1    
                     self.spided_urls.add(abs_url)
         
-        if count <= 5:
+        if count <= 3:
             time.sleep(3)
             with DynamicJSHandler() as dy_handler:
                 for dy_data in dy_handler.get_label_a(response.url):
@@ -221,8 +221,9 @@ class SelfProcess:
                         title = title if title else _text
                          
                         if title and len(title) > 8:
-                            title = re.sub(self.strip_spaces,'',title)
-                            abs_url = re.sub(self.strip_spaces,'',abs_url)
+                            if self._type == 0:
+                                title = re.sub(self.strip_spaces,'',title)
+                                abs_url = re.sub(self.strip_spaces,'',abs_url)
                             if self.urlname and (filter(lambda x:x in self.urlname,self.cmp_title)):
                                 if title and title not in self.titles:
                                     self.titles.add(title)
@@ -244,22 +245,12 @@ class SelfProcess:
                 if _data is None:
                     time.sleep(2)
                     continue
-                
-                for key,value in _data.items():
-                    if not isinstance(value,unicode): 
-                        detect_res = chardet.detect(value)
-                        enc = detect_res.get('encoding',None)
-                        if enc:
-                            value.decode(enc).encode('utf-8')
-                    else:
-                        value = value.encode('utf-8')        
-                    _data[key] = value
                         
                 if (_data.get('title') is None) or (not(_data.get('title'))):# or (not(_data.get('link').endswith('htm') or _data.get('link').endswith('html'))):
                     continue
 #                 logging.info(_data)
                 try:
-                    if _data.has_key('check_title'):
+                    if 'check_title' in _data:
                         if not s.query(self._model).filter(self._model.title == _data.get('title')).first():#EducationNews.title == _data.get('title'),
                             _data['createtime'] = datetime.now()
                             _data.pop("check_title")
@@ -267,7 +258,7 @@ class SelfProcess:
                                 self._model(**_data)
                             )
                             count += 1
-                            print("download:" + str(count) + ',' + datetime.now().strftime("%Y-%m-%d %H:%I:%S"))
+                            #print("download:" + str(count) + ',' + datetime.now().strftime("%Y-%m-%d %H:%I:%S"))
                     else: 
                         if not s.query(self._model).filter(self._model.link == _data.get('link')).first():#EducationNews.title == _data.get('title'),
                             _data['createtime'] = datetime.now()
@@ -275,21 +266,22 @@ class SelfProcess:
                                 self._model(**_data)
                             )
                             count += 1
-                            print("download:" + str(count) + ',' + datetime.now().strftime("%Y-%m-%d %H:%I:%S"))
+                            #print("download:" + str(count) + ',' + datetime.now().strftime("%Y-%m-%d %H:%I:%S"))
     #                     else:
-    #                         print "download:pass," + datetime.now().strftime("%Y-%m-%d %H:%I:%S")
+    #                         #print "download:pass," + datetime.now().strftime("%Y-%m-%d %H:%I:%S")
                     
                     if count > 0 and count % 5 == 0:
                         s.commit()
-                except Exception,e:
-                    print e
-                    with open('error.log','a') as f:
+                        print(count)
+                except Exception as e:
+                    #print e
+                    with open('error.log','a',encoding="utf-8") as f:
                         _error_dict = {}
                         _error_dict.update(_data)
                         _error_dict['level'] = 'error'
                         _error_dict['time'] = str(datetime.now())
                         _error_dict['reason'] = '数据库插入'
-                        if _error_dict.has_key('createtime'):
+                        if 'createtime' in _error_dict:
                             _error_dict['createtime'] = str(_error_dict['createtime'])
                         f.write(json.dumps(_error_dict,ensure_ascii=False))  #.decode('utf8').encode('gb2312')
                         f.write(os.linesep)

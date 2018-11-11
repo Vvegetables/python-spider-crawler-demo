@@ -17,6 +17,8 @@ from sqlalchemy.sql.schema import Column
 from sqlalchemy.sql.sqltypes import Integer, String, DateTime,Text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import and_
+import pymysql
+pymysql.install_as_MySQLdb()
 
 LOGIN = dict(
     username = 'ct',
